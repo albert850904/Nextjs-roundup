@@ -1,42 +1,39 @@
-import Head from 'next/head';
-import { Fragment } from 'react';
-
-import PostContent from '../../components/posts/post-detail/post-content';
-import { getPostData, getPostsFiles } from '../../lib/posts-util';
+import Head from "next/head";
+import PostContent from "../../components/posts/postsDetail/PostContent";
+import { getPostData, getPostsFileName } from "../../lib/postUtil";
 
 function PostDetailPage(props) {
   return (
-    <Fragment>
+    <>
       <Head>
-        <title>{props.post.title}</title>
-        <meta name='description' content={props.post.excerpt} />
+        <title>{props.postData?.title}</title>
+        <meta name="description" content={props.postData?.detailedContent} />
       </Head>
-      <PostContent post={props.post} />
-    </Fragment>
+      <PostContent postData={props.postData} />
+    </>
   );
 }
 
 export function getStaticProps(context) {
   const { params } = context;
   const { slug } = params;
-
-  const postData = getPostData(slug);
+  const postDetail = getPostData(slug);
 
   return {
     props: {
-      post: postData,
+      postData: postDetail,
     },
-    revalidate: 600,
+    revalidate: 600, // 10 min 拿一次新的detail
   };
 }
 
 export function getStaticPaths() {
-  const postFilenames = getPostsFiles();
-
-  const slugs = postFilenames.map((fileName) => fileName.replace(/\.md$/, ''));
+  const fileNames = getPostsFileName();
+  const slugs = fileNames.map((file) => file.replace(/\.md$/, ""));
 
   return {
-    paths: slugs.map((slug) => ({ params: { slug: slug } })),
+    // 抽掉params中舊的slug
+    paths: slugs.map((slug) => ({ params: { slug } })),
     fallback: false,
   };
 }

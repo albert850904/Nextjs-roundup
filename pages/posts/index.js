@@ -1,21 +1,16 @@
-import Head from 'next/head';
-import { Fragment } from 'react';
-
-import AllPosts from '../../components/posts/all-posts';
-import { getAllPosts } from '../../lib/posts-util';
+import Head from "next/head";
+import AllPosts from "../../components/posts/AllPosts";
+import { getAllPosts } from "../../lib/postUtil";
 
 function AllPostsPage(props) {
   return (
-    <Fragment>
+    <>
       <Head>
-        <title>All Posts</title>
-        <meta
-          name='description'
-          content='A list of all programming-related tutorials and posts!'
-        />
+        <title>Lambo Posts</title>
+        <meta name="description" content="Posts List about Lambo" />
       </Head>
-      <AllPosts posts={props.posts} />
-    </Fragment>
+      <AllPosts postsList={props.postsList} />
+    </>
   );
 }
 
@@ -24,8 +19,9 @@ export function getStaticProps() {
 
   return {
     props: {
-      posts: allPosts,
+      postsList: allPosts,
     },
+    revalidate: 30 * 60,
   };
 }
 
